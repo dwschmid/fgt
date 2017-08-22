@@ -36,9 +36,9 @@ popts.NIPFW_size_marker_active      = 6;
 popts.NIPFW_color_marker_inactive  	= [0.7294 0.8314 0.9569];
 popts.NIPFW_size_marker_inactive  	= 5;
 popts.NIPFW_color_line_active       = [0.2039 0.3020 0.4941];
-popts.NIPFW_thick_line_active       = 1;
+popts.NIPFW_thick_line_active       = 6;
 popts.NIPFW_color_line_inactive     = [0.7294 0.8314 0.9569];
-popts.NIPFW_thick_line_inactive     = 1;
+popts.NIPFW_thick_line_inactive     = 5;
 
 % Amplitude
 popts.ampl_color_active             = [0.3059 0.3961 0.5804];
@@ -82,4 +82,4 @@ popts.SP_xmax                       = 0.7;
 popts.SP_ymax                       = 0.9;
 
 % Save data
-save(['ext',filesep,'popts.mat'],'popts')
+save(['int',filesep,'popts.mat'],'popts')

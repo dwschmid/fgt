@@ -812,18 +812,23 @@ switch lower(Action)
                     
                     % - Plot analysis of the curvature without smoothing
                     ph(count+1) = plot(Fold(i).Face(j).WindowSizes, Fold(i).Face(j).NIP.Ori, 'o', 'MarkerSize', popts.NIPFW_size_marker_inactive,...
-                        'MarkerEdgeColor', 'k', 'MarkerFaceColor', popts.NIPFW_color_marker_inactive, 'Parent', achse);
+                        'MarkerEdgeColor', 'k', 'MarkerFaceColor', popts.NIPFW_color_marker_inactive,...
+                        'Parent', achse,'Hittest','off', 'PickableParts', 'none');
                     % - Plot anaysis of the smoothed curvature
-                    ph(count+2) = plot(Fold(i).Face(j).WindowSizes, Fold(i).Face(j).NIP.Smoothed, 'Color', popts.NIPFW_color_line_inactive, 'Parent', achse);
+                    ph(count+2) = plot(Fold(i).Face(j).WindowSizes, Fold(i).Face(j).NIP.Smoothed, 'o', 'MarkerSize', popts.NIPFW_thick_line_inactive,...
+                        'MarkerEdgeColor', popts.NIPFW_color_marker_inactive,...
+                        'Parent', achse,'Hittest','off', 'PickableParts', 'none');
                     count = count + 2;
                 end
             end
             
             % Plot active
             % - Plot analysis of the curvature without smoothing
-            set(ph(active+1), 'MarkerSize', popts.NIPFW_size_marker_active,'MarkerEdgeColor', 'k', 'MarkerFaceColor', popts.NIPFW_color_marker_active, 'Parent', achse);       
+            set(ph(active+1), 'MarkerSize', popts.NIPFW_size_marker_active,'MarkerEdgeColor', 'k', 'MarkerFaceColor', popts.NIPFW_color_marker_active,...
+                'Parent', achse,'Hittest','off', 'PickableParts', 'none');       
             % - Plot anaysis of the smoothed curvature
-            set(ph(active+2), 'Color',popts.NIPFW_color_line_active,'LineWidth',popts.NIPFW_thick_line_active, 'Parent', achse);
+            set(ph(active+2), 'MarkerSize', popts.NIPFW_thick_line_active,'MarkerEdgeColor', popts.NIPFW_color_line_active,...
+                'Parent', achse,'Hittest','off', 'PickableParts', 'none');
             
             % Set plot handle
             setappdata(achse, 'plot_handle',  ph);
@@ -837,11 +842,11 @@ switch lower(Action)
             
             % % Add fake points and lines to the plot to used in the legend
             handle_legend(1)   = plot(0, -1, 'o', 'MarkerSize', popts.NIPFW_size_marker_inactive,'MarkerEdgeColor', 'k', 'MarkerFaceColor', popts.NIPFW_color_marker_inactive, 'Parent', achse);
-            handle_legend(2)   = plot([0 0], [0 0], 'Color', popts.NIPFW_color_line_inactive, 'Parent', achse);
+            handle_legend(2)   = plot(0, -1, 'o', 'MarkerSize', popts.NIPFW_thick_line_inactive,'MarkerEdgeColor', popts.NIPFW_color_line_inactive, 'Parent', achse);
             handle_legend(3)   = plot(0, -1, 'o', 'MarkerSize', popts.NIPFW_size_marker_active,'MarkerEdgeColor', 'k', 'MarkerFaceColor', popts.NIPFW_color_marker_active, 'Parent', achse);
-            handle_legend(4)   = plot([0 0], [0 0], 'Color', popts.NIPFW_color_line_active, 'Parent', achse);
+            handle_legend(4)   = plot(0, -1, 'o', 'MarkerSize', popts.NIPFW_thick_line_active,'MarkerEdgeColor', popts.NIPFW_color_line_active, 'Parent', achse);
         
-            legend(handle_legend, {'A','B','Current A','Current B'}, 'Location', 'NorthEast');
+            legend(handle_legend, {'Without Smoothing','With Smoothing','Current Face without Smoothing','Current Face with Smoothing'}, 'Location', 'NorthEast');
             
             %  Add Line
             if Filt == 0
@@ -849,12 +854,17 @@ switch lower(Action)
             else
                 for i = 1:length(Fold)
                     for j = 1:2
-                        plot([Fold(i).Face(j).filter_width, Fold(i).Face(j).filter_width], get(achse, 'YLim'), '--','Color',0.8*[1 1 1], 'parent', achse);
+                        hl = plot([Fold(i).Face(j).filter_width, Fold(i).Face(j).filter_width], get(achse, 'YLim'), '--','Color',0.8*[1 1 1], 'parent', achse);
+                        
+                        % Do not add to legend
+                        set(get(get(hl,'Annotation'),'LegendInformation'), 'IconDisplayStyle','off');
                     end
                 end
                 handle_line       = plot([Fold(fold).Face(face).filter_width, Fold(fold).Face(face).filter_width], get(achse, 'YLim'), 'k--', 'parent', achse);
             end
-            
+            % Do not add to legend
+            set(get(get(handle_line,'Annotation'),'LegendInformation'), 'IconDisplayStyle','off');
+                    
             % Title
             if Filt == 0
                 handle_title    = title(achse, ['NIP-FW diagram. Filter Width: ', num2str(Fold(1).Face(1).filter_width)],'Color', [0 0 0]);
@@ -886,7 +896,7 @@ switch lower(Action)
                     % - Plot analysis of the curvature without smoothing
                     set(ph(count+1), 'MarkerSize', popts.NIPFW_size_marker_inactive,'MarkerEdgeColor', 'k', 'MarkerFaceColor', popts.NIPFW_color_marker_inactive, 'Parent', achse);
                     % - Plot anaysis of the smoothed curvature
-                    set(ph(count+2), 'Color',popts.NIPFW_color_line_inactive,'LineWidth',popts.NIPFW_thick_line_inactive, 'Parent', achse);
+                    set(ph(count+2), 'MarkerEdgeColor',popts.NIPFW_color_line_inactive,'MarkerSize',popts.NIPFW_thick_line_inactive, 'Parent', achse);
                     count = count + 2;
                 end
             end
@@ -897,7 +907,7 @@ switch lower(Action)
             set(ph(active+1), 'MarkerSize', popts.NIPFW_size_marker_active,'MarkerEdgeColor', 'k', 'MarkerFaceColor', popts.NIPFW_color_marker_active, 'Parent', achse);       
             
             % - Plot anaysis of the smoothed curvature
-            set(ph(active+2), 'Color',popts.NIPFW_color_line_active,'LineWidth',popts.NIPFW_thick_line_active, 'Parent', achse);
+            set(ph(active+2), 'MarkerEdgeColor',popts.NIPFW_color_line_active,'MarkerSize',popts.NIPFW_thick_line_active, 'Parent', achse);
             
             % Set legend handle
             setappdata(achse, 'plot_handle',  ph);
@@ -1165,11 +1175,17 @@ switch lower(Action)
             for i = 1:length(Fold)
                 for j = 1:2
                     if ~(i==fold && j==face)
-                        plot([Fold(i).Face(j).filter_width, Fold(i).Face(j).filter_width], get(achse, 'YLim'), '--','Color',0.8*[1 1 1], 'parent', achse);
+                        hl = plot([Fold(i).Face(j).filter_width, Fold(i).Face(j).filter_width], get(achse, 'YLim'), '--','Color',0.8*[1 1 1], 'parent', achse);
+                        
+                        % Do not add to legend
+                        set(get(get(hl,'Annotation'),'LegendInformation'), 'IconDisplayStyle','off');
                     end
                 end
             end
             handle_line       = plot([Fold(fold).Face(face).filter_width, Fold(fold).Face(face).filter_width], get(achse, 'YLim'),'--', 'Color', 0.8*[1 1 1], 'parent', achse);
+            
+            % Do not add to legend
+            set(get(get(handle_line,'Annotation'),'LegendInformation'), 'IconDisplayStyle','off');
             
             % Title
             if Filt == 0
@@ -1196,7 +1212,7 @@ switch lower(Action)
         if ~isempty(getappdata(achse, 'point_h2'))
             rmappdata(achse, 'point_h2');
         end
-        hold(achse, 'on');;
+        hold(achse, 'on');
         
         % Activate mouseover function
         %set(fgt_gui_handle,'windowbuttonmotionfcn', @(a,b) mouseover);
