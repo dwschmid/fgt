@@ -77,24 +77,34 @@ SEGM  = [1:n; [2:n 1]];
 PHASE = [mean(X(1:2));mean(Y(1:2));1;-1];
 
 
-% TRIANGLE
-% Set triangle options
-opts = [];
-opts.element_type     = 'tri3';   % element type
-opts.triangulate_poly = 1;
-opts.min_angle        = 32;
-opts.other_options    = 'aA';
+% % TRIANGLE
+% % Set triangle options
+% opts = [];
+% opts.element_type     = 'tri3';   % element type
+% opts.triangulate_poly = 1;
+% opts.min_angle        = 32;
+% opts.other_options    = 'aA';
+% 
+% % Create triangle input structure
+% tristr.points         = NODES;
+% tristr.segments       = uint32(SEGM); 
+% tristr.regions        = PHASE;
+% 
+% MESH            = mtriangle(opts, tristr);
+% 
+% % Transform data
+% GCOORD    = MESH.NODES;
+% ELEM2NODE = double(MESH.ELEMS);
 
+% MESH2D
 % Create triangle input structure
-tristr.points         = NODES;
-tristr.segments       = uint32(SEGM); 
-tristr.regions        = PHASE;
+opts.disp             = inf;
+[vert,etri,tria,tnum] = refine2(NODES',SEGM',[],opts) ;
 
-MESH            = mtriangle(opts, tristr);
 
 % Transform data
-GCOORD    = MESH.NODES;
-ELEM2NODE = double(MESH.ELEMS);
+GCOORD    = vert';
+ELEM2NODE = tria';
 
 nel    = size(ELEM2NODE,2);
 nnode  = size(GCOORD,2);
@@ -168,7 +178,7 @@ top = order(find(order==stop):find(order==etop));
 
 % Check if the direction of order is clockwise
 tes = find( GCOORD(1,:) == Xu(2) & GCOORD(2,:) == Yu(2) );
-if ismember(tes,top) == 0;
+if ismember(tes,top) == 0
     order = [order(1) fliplr(order(2:end))];
     top   = order(find(order==stop):find(order==etop));
 end

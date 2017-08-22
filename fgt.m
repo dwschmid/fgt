@@ -31,14 +31,16 @@ switch lower(Action)
         Screensize      = get(0, 'ScreenSize');
         x_res           = Screensize(3);
         y_res           = Screensize(4);
-        frac            = 10;
+        gui_width       = 0.85*x_res;
+        gui_height      = 0.85*y_res;
+        gui_x           = (x_res-gui_width)/2;
+        gui_y           = (y_res-gui_height)/2;
         
         fgt_gui_handle = figure(...
-            'Units', 'pixels','pos', round([x_res/frac y_res/frac x_res/frac*(frac-2)  y_res/frac*(frac-2)]),...
+            'Units', 'pixels','position', round([gui_x gui_y gui_width  gui_height]),...
             'Name', 'Fold Geometry Toolbox by M. Adamuszek, D. W. Schmid, & M. Dabrowski', 'tag', 'fgt_gui_handle',...
             'NumberTitle', 'off', 'ToolBar', 'none',  'DockControls', 'off','MenuBar', 'none', ...
             'Color', get(0, 'DefaultUipanelBackgroundColor'),...
-            'Units', 'Pixels', ...
             'WindowButtonDownFcn', @(a,b) fgt('step_1_load'), ...
             'Renderer', 'zbuffer'); %zbuffer so that contour plots work
         
@@ -86,7 +88,7 @@ switch lower(Action)
         setappdata(fgt_gui_handle, 'gap',      gap);
         
         %  Lower Part is 4 buttons heigh + gap, upper part rest
-        lpanel_height          	= 4*b_height + 4*gap + 3*gap;
+        lpanel_height          	= 4*b_height + 5*gap + 3*gap;
         
         %  Uipanel Top
         Position_fig          	= get(fgt_gui_handle, 'Position');
@@ -125,7 +127,7 @@ switch lower(Action)
         setappdata(fgt_gui_handle, 'Manual', 0);
         
         %  Set the plotting values
-        load(['int',filesep,'popts.mat'])
+        load(['popts.mat'])
         
         %  Set the plotting options parameters
         setappdata(fgt_gui_handle, 'popts', popts);
@@ -286,7 +288,7 @@ switch lower(Action)
                     end
                     
                 end
-                end
+            end
             
             %  Plot
             for i=1:length(Fold)
@@ -475,7 +477,7 @@ switch lower(Action)
         fgt('step_2');
         
     case 'step_2'
-        %% STEP_2
+        %% STEP_2: Curvature smoothing
         
         % Put FGT into step_2 mode
         setappdata(fgt_gui_handle, 'mode', 2);
@@ -1383,7 +1385,7 @@ switch lower(Action)
         fgt('step_3')
         
     case 'step_3'
-        %% STEP_3
+        %% STEP_3: Amplitude & Wavelegnth
         
         % Put FGT into step_3 mode
         setappdata(fgt_gui_handle, 'mode', 3);
@@ -1884,7 +1886,7 @@ switch lower(Action)
         units_normalized;
         
     case 'step_4'
-        %% STEP_4
+        %% STEP_4: Thickness
         
         % Put FGT into step_4 mode
         setappdata(fgt_gui_handle, 'mode', 4);
@@ -2129,7 +2131,7 @@ switch lower(Action)
         units_normalized;
         
     case 'step_5'
-        %% STEP_5
+        %% STEP_5: Equations
         
         % Put FGT into step_5 mode
         setappdata(fgt_gui_handle, 'mode', 5);
@@ -2492,7 +2494,7 @@ switch lower(Action)
         units_normalized;
 
     case 'step_6'
-        %% STEP_6
+        %% STEP_6: Palettes
         
         % Put FGT into step_6 mode
         setappdata(fgt_gui_handle, 'mode', 6);
