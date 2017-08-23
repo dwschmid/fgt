@@ -168,7 +168,7 @@ switch lower(Action)
         
         %  Determine where help system is
         Path_fgt        = which('fgt.m');
-        Path_fgt_help   = [Path_fgt(1:end-5), 'fgt_help.pdf'];
+        Path_fgt_help   = [Path_fgt(1:end-5),'hlp',filesep,'help.pdf'];
 
         web(Path_fgt_help, '-browser'); 
         
@@ -3170,7 +3170,7 @@ end
             face    = face - 1;
         elseif strcmp(get(gco,'Tag'),'face_number_down')
             face    = face + 1;
-        end
+        end          
         
         setappdata(fgt_gui_handle, 'fold_number', fold);
         setappdata(fgt_gui_handle, 'face_number', face);
@@ -3180,10 +3180,20 @@ end
         
         % Set fold or face number
         if mode == 2 || mode == 22 || mode == 6
-            uicontrol('Parent', fgt_upanel_control, 'style', 'text', 'String',num2str(fold),...
+            if fold == 0
+                uicontrol('Parent', fgt_upanel_control, 'style', 'text', 'String','All',...
                 'position', [Position(2)+gap, 2*gap+1*b_height,  b_height, b_height]);
-            uicontrol('Parent', fgt_upanel_control, 'style', 'text', 'String',num2str(face),...
-                'position', [Position(2)+3*gap+b_height, 2*gap+1*b_height,  b_height, b_height]);
+            else
+                uicontrol('Parent', fgt_upanel_control, 'style', 'text', 'String',num2str(fold),...
+                    'position', [Position(2)+gap, 2*gap+1*b_height,  b_height, b_height]);
+            end
+            if face == 0
+                uicontrol('Parent', fgt_upanel_control, 'style', 'text', 'String','All',...
+                    'position', [Position(2)+3*gap+b_height, 2*gap+1*b_height,  b_height, b_height]);
+            else
+                uicontrol('Parent', fgt_upanel_control, 'style', 'text', 'String',num2str(face),...
+                    'position', [Position(2)+3*gap+b_height, 2*gap+1*b_height,  b_height, b_height]);
+            end
         else
             uicontrol('Parent', fgt_upanel_control, 'style', 'text', 'String',num2str(fold),...
                 'position', [Position(2)+gap, 2*gap+1*b_height,  b_height, b_height]);

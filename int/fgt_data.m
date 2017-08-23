@@ -18,14 +18,14 @@ switch lower(Action)
         end
         
         DefaultUicontrolPosition = get(0, 'DefaultUicontrolPosition');
-        b_height                 = DefaultUicontrolPosition(4);
+        b_height                 = DefaultUicontrolPosition(4) + 2;
         b_width                  = DefaultUicontrolPosition(3);
         gap                      = 5;
         
         Screensize      = get(0, 'ScreenSize');
         fig_width       = 775;
         fig_height      = 400;%242;
-        lpanel_height   = 4*b_height + 4*gap + 3*gap;
+        lpanel_height   = 4*b_height + 5*gap + 3*gap;
        
         % Create dialog window
         table_gui_handle = figure( ...
@@ -146,13 +146,13 @@ switch lower(Action)
         % DATA SELECTION
         % Text
         uicontrol('Parent', fgt_upanel_control, 'style', 'text', 'String', 'Data Type','HorizontalAlignment','left', ...
-            'position', [fig_width-2*gap-4*gap-3*b_width, lpanel_height-4*gap-b_height, b_width, b_height]);
+            'position', [fig_width-2*gap-4*gap-3*b_width, 3*b_height+4*gap, b_width, b_height]);
         
         % Button
         uicontrol('Parent', fgt_upanel_control, 'style', 'popupmenu', 'String', {'Statistical Data';'Individual Folds Data'}, 'value', 1, ...
             'callback',  @(a,b)  fgt_data('uicontrol_callback'), ...
             'tag', 'data_type', 'BackgroundColor','w', ...
-            'position', [fig_width-2*gap-2*gap-2*b_width, lpanel_height-3*gap-b_height, 2*b_width, b_height]);
+            'position', [fig_width-2*gap-2*gap-2*b_width, 3*b_height+4*gap, 2*b_width, b_height]);
         
         
         % AMPLITUDE METHOD
