@@ -165,11 +165,7 @@ switch lower(Action)
         
     case 'help'
         %% HELP
-        
-        %  Determine where help system is
-        Path_fgt        = which('fgt.m');
-        Path_fgt_help   = [Path_fgt(1:end-5),'hlp',filesep,'help.pdf'];
-
+        Path_fgt_help   = which('fgt_help.pdf');
         web(Path_fgt_help, '-browser'); 
         
     case 'comment'
@@ -3051,7 +3047,7 @@ end
         %  Find the arc length of the fold's first interface
         Arc_length  = sqrt( (Fold(1).Face(1).X.Ori(2:end)-Fold(1).Face(1).X.Ori(1:end-1)).^2 + (Fold(1).Face(1).Y.Ori(2:end)-Fold(1).Face(1).Y.Ori(1:end-1)).^2 );
         Arc_length  = [0 cumsum(Arc_length)];
-        scaling_factor = Arc_length(end)
+        scaling_factor = Arc_length(end);
         
         Shift   = Fold(1).Face(1).X.Ori(1);
             
