@@ -19,14 +19,23 @@ switch lower(Action)
     case 'initialize'
         %% INITIALIZE
         
+        %  Add required folders
+        if ~isdeployed
+            fgt_path    =  fileparts(mfilename('fullpath'));
+            addpath(fullfile(fgt_path));
+            addpath(fullfile(fgt_path, 'int'));
+            addpath(fullfile(fgt_path, 'hlp'));
+            addpath(fullfile(fgt_path, 'ext', 'gaimc'));
+            addpath(fullfile(fgt_path, 'ext', 'GUILayoutToolbox', 'layout'));
+            addpath(fullfile(fgt_path, 'ext', 'mesh2D'));
+            addpath(fullfile(fgt_path, 'ext', 'selfintersect'));
+        end
+        
         %  Delete figure if it already exists
         if ~isempty(fgt_gui_handle)
             delete(fgt_gui_handle);
         end
         
-        %  Add current path and subfolders
-        addpath(genpath(pwd));
-       
         %  Figure Setup
         Screensize      = get(0, 'ScreenSize');
         x_res           = Screensize(3);
@@ -92,7 +101,7 @@ switch lower(Action)
         
         %  Uipanel Top
         Position_fig          	= get(fgt_gui_handle, 'Position');
-        fgt_upanel_top          = uipanel('Parent', fgt_gui_handle, 'Tag', 'fgt_upanel_top',     'Title', 'Fold Geometry Toolbox', 'Units', 'Pixels', 'Position', [gap, lpanel_height+gap, Position_fig(3)-2*gap, Position_fig(4)-lpanel_height-gap]);
+        uipanel('Parent', fgt_gui_handle, 'Tag', 'fgt_upanel_top',     'Title', 'Fold Geometry Toolbox', 'Units', 'Pixels', 'Position', [gap, lpanel_height+gap, Position_fig(3)-2*gap, Position_fig(4)-lpanel_height-gap]);
         
         % Uipanel Comment
         fgt_upanel_comment     	= uipanel('Parent', fgt_gui_handle, 'Tag', 'fgt_upanel_comment', 'Title', 'Comment',               'Units', 'Pixels', 'Position', [gap, gap, Position_fig(3)/5*3-1.5*gap, lpanel_height]);
@@ -109,7 +118,8 @@ switch lower(Action)
             'Max', 2, 'Min', 0); %Enables multi lines
         
         % Set Units to Normalized - Resizing
-        units_normalized;
+        % TODO: Do we need this?
+        % units_normalized;
         
         %  Default values
         fgt('default_values')
@@ -127,7 +137,7 @@ switch lower(Action)
         setappdata(fgt_gui_handle, 'Manual', 0);
         
         %  Set the plotting values
-        load(['popts.mat'])
+        load('popts.mat');
         
         %  Set the plotting options parameters
         setappdata(fgt_gui_handle, 'popts', popts);
@@ -184,8 +194,9 @@ switch lower(Action)
         setappdata(fgt_gui_handle, 'mode', 1);
         set(fgt_gui_handle,'windowbuttonmotionfcn',[]);
         
-        %  Delete all axes that may exist
+        %  Delete all axes and UIContainers that may exist
         delete(findobj(fgt_gui_handle, 'type', 'axes'));
+        delete(findobj(fgt_gui_handle, 'type', 'UIContainer'));
         
         %  Find and update top panel
         fgt_upanel_top  =  findobj(fgt_gui_handle, 'tag', 'fgt_upanel_top');
@@ -263,21 +274,20 @@ switch lower(Action)
                 plot([Fold(fold).Face(1).X.Ori fliplr(Fold(fold).Face(2).X.Ori)], [Fold(fold).Face(1).Y.Ori fliplr(Fold(fold).Face(2).Y.Ori)],...
                      'o','Color', popts.face_color_active,'MarkerSize',2, 'Parent', achse);
                 
-                [x0, y0, segments] = selfintersect( [Fold(fold).Face(1).X.Ori fliplr(Fold(fold).Face(2).X.Ori) ] , [Fold(fold).Face(1).Y.Ori fliplr(Fold(fold).Face(2).Y.Ori) ] );
+                x0 = selfintersect( [Fold(fold).Face(1).X.Ori fliplr(Fold(fold).Face(2).X.Ori) ] , [Fold(fold).Face(1).Y.Ori fliplr(Fold(fold).Face(2).Y.Ori) ] );
                 
-                if length(x0)>0
+                if ~isempty(x0)
                     
                     % Flip data of one fold interface
                     Fold(fold).Face(2).X.Ori = fliplr(Fold(fold).Face(2).X.Ori);
                     Fold(fold).Face(2).Y.Ori = fliplr(Fold(fold).Face(2).Y.Ori);
                     
-                    [x0, y0, segments] = selfintersect( [Fold(fold).Face(1).X.Ori fliplr(Fold(fold).Face(2).X.Ori)] , [Fold(fold).Face(1).Y.Ori fliplr(Fold(fold).Face(2).Y.Ori)] );
+                    [x0, y0] = selfintersect( [Fold(fold).Face(1).X.Ori fliplr(Fold(fold).Face(2).X.Ori)] , [Fold(fold).Face(1).Y.Ori fliplr(Fold(fold).Face(2).Y.Ori)] );
                     
                     % Save data
                     setappdata(fgt_gui_handle, 'Fold', Fold);
                     
-                    if length(x0)>0
-                        
+                    if ~isempty(x0)
                         plot(x0,y0,'or')
                         warndlg('The fold interface self intersects.', 'Next not possible!', 'modal');
                         break;
@@ -298,7 +308,7 @@ switch lower(Action)
         else
             % PICTURE
             % Need to flip image for normal axes convention
-            image([1, size(Fold(1).PICTURE,2)], [1, size(Fold(1).PICTURE,1)], flipdim(Fold(1).PICTURE, 1), 'Parent', achse);
+            image([1, size(Fold(1).PICTURE,2)], [1, size(Fold(1).PICTURE,1)], flip(Fold(1).PICTURE), 'Parent', achse);
             set(achse,  'YDir', 'normal');
             box(achse,  'on');
             axis(achse, 'equal');
@@ -358,8 +368,8 @@ switch lower(Action)
                         % Check if fold self intersects
                         if face == 2
                             for fold = 1:length(Fold)
-                                [x0, y0, segments] = selfintersect( [Fold(fold).Face(1).X.Ori fliplr(Fold(fold).Face(2).X.Ori)] , [Fold(fold).Face(1).Y.Ori fliplr(Fold(fold).Face(2).Y.Ori)] );
-                                if length(x0)>0
+                                x0 = selfintersect( [Fold(fold).Face(1).X.Ori fliplr(Fold(fold).Face(2).X.Ori)] , [Fold(fold).Face(1).Y.Ori fliplr(Fold(fold).Face(2).Y.Ori)] );
+                                if ~isempty(x0)
                                     warndlg('The fold interface self intersects. Please digitize the fold once more.', 'Error!', 'modal');
                                     Fold = rmfield(Fold, 'Face');
                                     setappdata(fgt_gui_handle, 'Fold', Fold);
@@ -449,7 +459,7 @@ switch lower(Action)
         
         % Check if enough interfaces are digitized
         Fold    = getappdata(fgt_gui_handle, 'Fold');
-        if length(Fold)>0 && isfield(Fold, 'Face') && length(Fold(end).Face)==2
+        if ~isempty(Fold) && isfield(Fold, 'Face') && length(Fold(end).Face)==2
             norminitialize_fold_structure;
         else
             warndlg('Digitize even number of fold interfaces.', 'Next not possible!', 'modal');
@@ -478,8 +488,9 @@ switch lower(Action)
         % Put FGT into step_2 mode
         setappdata(fgt_gui_handle, 'mode', 2);
         
-        %  Delete all axes that may exist
+        %  Delete all axes and UIContainers that may exist
         delete(findobj(fgt_gui_handle, 'type', 'axes'));
+        delete(findobj(fgt_gui_handle, 'type', 'UIContainer'));
         
         %  Setup new axes
         fgt_upanel_top  = findobj(fgt_gui_handle, 'tag', 'fgt_upanel_top');
@@ -1403,8 +1414,9 @@ switch lower(Action)
         setappdata(fgt_gui_handle, 'mode', 3);
         set(fgt_gui_handle,'windowbuttonmotionfcn',[]);
         
-        %  Delete all axes that may exist
+        %  Delete all axes and UIContainers that may exist
         delete(findobj(fgt_gui_handle, 'type', 'axes'));
+        delete(findobj(fgt_gui_handle, 'type', 'UIContainer'));
         
         %  Setup new axes
         fgt_upanel_top  = findobj(fgt_gui_handle, 'tag', 'fgt_upanel_top');
@@ -1903,8 +1915,9 @@ switch lower(Action)
         % Put FGT into step_4 mode
         setappdata(fgt_gui_handle, 'mode', 4);
         
-        %  Delete all axes that may exist
+        %  Delete all axes and UIContainers that may exist
         delete(findobj(fgt_gui_handle, 'type', 'axes'));
+        delete(findobj(fgt_gui_handle, 'type', 'UIContainer'));
         
         %  Setup new axes
         fgt_upanel_top  = findobj(fgt_gui_handle, 'tag', 'fgt_upanel_top');
@@ -2149,8 +2162,9 @@ switch lower(Action)
         setappdata(fgt_gui_handle, 'mode', 5);
         set(fgt_gui_handle,'windowbuttonmotionfcn',[]);
         
-        %  Delete all axes that may exist
+        %  Delete all axes and UIContainers that may exist
         delete(findobj(fgt_gui_handle, 'type', 'axes'));
+        delete(findobj(fgt_gui_handle, 'type', 'UIContainer'));
         
         %  Setup new axes
         fgt_upanel_top  = findobj(fgt_gui_handle, 'tag', 'fgt_upanel_top');
@@ -2445,7 +2459,7 @@ switch lower(Action)
             ( 1+cosh(2*kd)-2*kd.*sin(2*kd) )./( 2*kd.*cosh(2*kd)-sinh(2*kd) )];
         
         
-        for i = [1:4, 6:9];
+        for i = [1:4, 6:9]
             % Remove Imaginary Numbers
             Solution            = Solutions(i,imag(Solutions(i,:))==0);
             
@@ -2506,14 +2520,15 @@ switch lower(Action)
         units_normalized;
 
     case 'step_6'
-        %% STEP_6: Palettes
+        %% STEP_6: Surface Plots
         
         % Put FGT into step_6 mode
         setappdata(fgt_gui_handle, 'mode', 6);
         set(fgt_gui_handle,'windowbuttonmotionfcn',[]);
         
-        %  Delete all axes that may exist
+        %  Delete all axes and UIContainers and uitable that may exist
         delete(findobj(fgt_gui_handle, 'type', 'axes'));
+        delete(findobj(fgt_gui_handle, 'type', 'UIContainer'));
         delete(findobj(fgt_gui_handle, 'type', 'uitable'));
         
         %  Setup new axes
@@ -2761,15 +2776,13 @@ switch lower(Action)
         rcon = [10:10:100 150 200];
         [C,h]  = contour(Fold(1).FS_plot.lohs,Fold(1).FS_plot.bees,Fold(1).FS_plot.RRR,rcon,...
             'Color',popts.FS_vis_color,'LineWidth',popts.FS_vis_thick,'parent',achse);
-        text_handle = clabel(C,h);
-        set(text_handle,'BackgroundColor',[1 1 1],'Color',popts.FS_vis_color)
+        clabel(C, h, 'Color', popts.FS_vis_color);
         
         % Define and plot the strain contours
         escon = [0.1:0.1:0.9 0.95];
         [C,h] = contour(Fold(1).FS_plot.lohs,Fold(1).FS_plot.bees,Fold(1).FS_plot.SSS,escon,...
             'Color',popts.FS_stretch_color,'LineWidth',popts.FS_stretch_thick,'parent',achse);
-        text_handle = clabel(C,h);
-        set(text_handle,'BackgroundColor',[1 1 1],'Color',popts.FS_stretch_color)
+        clabel(C, h, 'Color', popts.FS_stretch_color);
         
         %Limit axes
         axis(achse,[popts.FS_xmin popts.FS_xmax popts.FS_ymin popts.FS_ymax])
@@ -2798,22 +2811,22 @@ switch lower(Action)
         % The actual data is plotted with the plot statement below. The
         % contour labels are generated with a low resolution (fast) data
         % grid of the same data. Of this only the labels are needed and
-        % therfor they are copyied with the copyobj and assigned to the
+        % therefore they are copyied with the copyobj and assigned to the
         % axes. The original countours and their labels are then deleted.
-        [co ch] = contour(Fold(1).SP_plot.Vis.XX,Fold(1).SP_plot.Vis.YY,Fold(1).SP_plot.Vis.ZZ,[10 10, 25 25, 50 50, 100 100, 250 250],'-w');
-        cc = clabel(co,ch,'LabelSpacing',150, 'BackgroundColor','w','Color',popts.SP_vis_color);
+        [co_sp, ch_sp] = contour(Fold(1).SP_plot.Vis.XX,Fold(1).SP_plot.Vis.YY,Fold(1).SP_plot.Vis.ZZ,[10 10, 25 25, 50 50, 100 100, 250 250],'-w');
+        clabel(co_sp, ch_sp,'LabelSpacing',150,'Color',popts.SP_vis_color, 'BackGroundColor', 'w');
         plot(Fold(1).SP_plot.Vis.H2L_num10, Fold(1).SP_plot.Vis.A2L_num10, 'Color',popts.SP_vis_color,'LineWidth',popts.SP_vis_thick,'parent',achse);
         plot(Fold(1).SP_plot.Vis.H2L_num25, Fold(1).SP_plot.Vis.A2L_num25, 'Color',popts.SP_vis_color,'LineWidth',popts.SP_vis_thick,'parent',achse);
         plot(Fold(1).SP_plot.Vis.H2L_num50, Fold(1).SP_plot.Vis.A2L_num50, 'Color',popts.SP_vis_color,'LineWidth',popts.SP_vis_thick,'parent',achse);
         plot(Fold(1).SP_plot.Vis.H2L_num100,Fold(1).SP_plot.Vis.A2L_num100,'Color',popts.SP_vis_color,'LineWidth',popts.SP_vis_thick,'parent',achse);
         plot(Fold(1).SP_plot.Vis.H2L_num250,Fold(1).SP_plot.Vis.A2L_num250,'Color',popts.SP_vis_color,'LineWidth',popts.SP_vis_thick,'parent',achse);
-        copyobj(cc,achse);
-        delete(ch);
+        % We finish the clabel trick as the last thing, when the plot is
+        % basically done as we need a drawnow statement.
         
         % Plot strain contours
-        [co ch] = contour(Fold(1).SP_plot.Vis.H2L_map,Fold(1).SP_plot.Vis.A2L_map,Fold(1).SP_plot.Vis.Strain_map',[0.10,0.20,0.30,0.40,0.50,0.60,0.65,0.70],...
+        [co, ch] = contour(Fold(1).SP_plot.Vis.H2L_map,Fold(1).SP_plot.Vis.A2L_map,Fold(1).SP_plot.Vis.Strain_map',[0.10,0.20,0.30,0.40,0.50,0.60,0.65,0.70],...
             'Color',popts.SP_short_color,'LineWidth',popts.SP_short_thick,'parent',achse);
-        clabel(co,ch,'LabelSpacing',150, 'BackgroundColor','w','Color',popts.SP_short_color);
+        clabel(co,ch,'LabelSpacing',150,'Color',popts.SP_short_color);
         
         % Limit Axis
         axis(achse,[0 popts.SP_xmax 0 popts.SP_ymax])
@@ -2823,6 +2836,11 @@ switch lower(Action)
         xlabel(achse,'H / \lambda')
         ylabel(achse,'A / \lambda')
         title(achse,'Schmalholz & Podladchikov (2001)')
+        
+        % clabel trick
+        drawnow; % Needed so that we can get the TextPrims
+        copyobj(ch_sp.TextPrims, achse); % Undocumented. See http://undocumentedmatlab.com/blog/customizing-contour-plots
+        delete(ch_sp);
         
         %  Plot FGT data points
         if fold == 0
@@ -2972,58 +2990,6 @@ switch lower(Action)
         
 end
 
-%% fun assert_install
-    function assert_install(Checkfile, Subdir, Description, Url)
-        % Make sure required Matlab File Exchange (FEX) components are
-        % installed
-        if ~exist(Checkfile, 'file')
-            
-            % Write into ext folder only
-            if ~exist('ext', 'dir')
-                mkdir('ext');
-            end
-            
-            if ~exist(['ext',filesep,Subdir], 'dir')
-                % The package has not been downloaded and unzipped yet
-                yes = 'Yes - Install package';
-                no = 'No - Do not install';
-                userchoice = questdlg(['FGT requires ' Description, ' from the Matlab File Exchange. ', 'Shall FGT download and install this for you?'], 'FGT: Missing Component', yes, no, yes);
-                
-                % Handle response
-                switch userchoice
-                    case yes
-                        [f,status] = urlwrite(Url, ['ext', filesep, Subdir, '.zip']);
-                        
-                        if status==0
-                            uiwait(warndlg({'No connection to Matlab File Exchange, or package does not exist under the link any longer.', ...
-                                'Failed to install ', Description} , ...
-                                'Package cannot be downloaded', ...
-                                'modal'));
-                        end
-                        
-                        % Unzip 
-                        unzip([Subdir, '.zip'], ['ext', filesep, Subdir]);
-                        
-                        % Remove File
-                        delete(['ext', filesep, Subdir, '.zip']);
-                        
-                    otherwise
-                        %Oh well, then it will not work
-                end
-            end
-            
-            % Add the subdirectories to the path
-            subdir_add([pwd, filesep, 'ext', filesep, Subdir]);
-            
-            % Make sure that Checkfile is now on the path
-            if ~exist(Checkfile, 'file')
-                uiwait(warndlg({[Checkfile, ' is still not on path.'] 'Failed to install package.' ['Try to install ', Description, ' manually.']}, ...
-                    'Package not installed', ...
-                    'modal'));
-            end
-        end            
-    end
-
 %% fun subdir_add
     function subdir_add(Subdir)
         % Add this subdirectory
@@ -3047,7 +3013,6 @@ end
         %  Find the arc length of the fold's first interface
         Arc_length  = sqrt( (Fold(1).Face(1).X.Ori(2:end)-Fold(1).Face(1).X.Ori(1:end-1)).^2 + (Fold(1).Face(1).Y.Ori(2:end)-Fold(1).Face(1).Y.Ori(1:end-1)).^2 );
         Arc_length  = [0 cumsum(Arc_length)];
-        scaling_factor = Arc_length(end);
         
         Shift   = Fold(1).Face(1).X.Ori(1);
             
@@ -3104,13 +3069,13 @@ end
     end
 
 %% fun fgt_zoom
-    function fgt_zoom(obj, event_obj)
+    function fgt_zoom(obj, ~)
         zoom_status     = {'off', 'on'};
         zoom(fgt_gui_handle, zoom_status{get(obj,'value')+1});
     end
 
 %% fun fgt_grid
-    function fgt_grid(obj, event_obj)
+    function fgt_grid(obj, ~)
                         
         % Get axis form step 6
         achse_1  = findobj(fgt_gui_handle, 'tag', 'axes_1');
@@ -3348,7 +3313,7 @@ end
             fold  	= getappdata(fgt_gui_handle, 'fold_number');
             
             % Point on interface that is closest to pointer x (arclength) position
-            [dummy, indx]   = min(abs( axes_x2 - [1:length(Fold(fold).Thickness.Local(1).Value)] ));
+            [~, indx]   = min(abs( axes_x2 - (1:length(Fold(fold).Thickness.Local(1).Value)) ));
             
             % Try to get handels 
             fill_h2 = getappdata(axes_1, 'fill_h2');
@@ -3400,7 +3365,7 @@ end
             fold  	= getappdata(fgt_gui_handle, 'fold_number');
             
             % Point on interface that is closest to pointer x (arclength) position
-            [dummy, indx]   = min(abs( axes_x4 - [1:length(Fold(fold).Thickness.Local(2).Value)] ));
+            [~, indx]   = min(abs( axes_x4 - (1:length(Fold(fold).Thickness.Local(2).Value)) ));
             
             % Try to get handels to the marker points
             fill_h4 = getappdata(axes_3, 'fill_h4');
