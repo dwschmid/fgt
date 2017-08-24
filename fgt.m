@@ -2814,7 +2814,7 @@ switch lower(Action)
         % therefore they are copyied with the copyobj and assigned to the
         % axes. The original countours and their labels are then deleted.
         [co_sp, ch_sp] = contour(Fold(1).SP_plot.Vis.XX,Fold(1).SP_plot.Vis.YY,Fold(1).SP_plot.Vis.ZZ,[10 10, 25 25, 50 50, 100 100, 250 250],'-w');
-        clabel(co_sp, ch_sp,'LabelSpacing',150,'Color',popts.SP_vis_color, 'BackGroundColor', 'w');
+        clabel(co_sp, ch_sp, 'Color',popts.SP_vis_color, 'BackGroundColor', 'w');
         plot(Fold(1).SP_plot.Vis.H2L_num10, Fold(1).SP_plot.Vis.A2L_num10, 'Color',popts.SP_vis_color,'LineWidth',popts.SP_vis_thick,'parent',achse);
         plot(Fold(1).SP_plot.Vis.H2L_num25, Fold(1).SP_plot.Vis.A2L_num25, 'Color',popts.SP_vis_color,'LineWidth',popts.SP_vis_thick,'parent',achse);
         plot(Fold(1).SP_plot.Vis.H2L_num50, Fold(1).SP_plot.Vis.A2L_num50, 'Color',popts.SP_vis_color,'LineWidth',popts.SP_vis_thick,'parent',achse);
@@ -2823,10 +2823,10 @@ switch lower(Action)
         % We finish the clabel trick as the last thing, when the plot is
         % basically done as we need a drawnow statement.
         
-        % Plot strain contours
-        [co, ch] = contour(Fold(1).SP_plot.Vis.H2L_map,Fold(1).SP_plot.Vis.A2L_map,Fold(1).SP_plot.Vis.Strain_map',[0.10,0.20,0.30,0.40,0.50,0.60,0.65,0.70],...
+        % Plot strain contours - % shortening
+        [co, ch] = contour(Fold(1).SP_plot.Vis.H2L_map, Fold(1).SP_plot.Vis.A2L_map, 100*Fold(1).SP_plot.Vis.Strain_map', 100*[0.10,0.20,0.30,0.40,0.50,0.60,0.65,0.70],...
             'Color',popts.SP_short_color,'LineWidth',popts.SP_short_thick,'parent',achse);
-        clabel(co,ch,'LabelSpacing',150,'Color',popts.SP_short_color);
+        clabel(co,ch,'Color',popts.SP_short_color);
         
         % Limit Axis
         axis(achse,[0 popts.SP_xmax 0 popts.SP_ymax])
@@ -2949,9 +2949,9 @@ switch lower(Action)
         % Together with the last two plot statements this can be used to
         % make the legend
         if indivudual_data == 1
-            legend([ll, h2],'Shortening', 'Viscosity Ratio', 'Individual Data', 'Average Data');
+            legend([ll, h2],'Shortening [%]', 'Viscosity Ratio', 'Individual Data', 'Average Data');
         else
-            legend([ll, h2],'Shortening', 'Viscosity Ratio', 'Average Data');
+            legend([ll, h2],'Shortening [%]', 'Viscosity Ratio', 'Average Data');
         end
         
         %  Update data
