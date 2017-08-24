@@ -2792,13 +2792,13 @@ switch lower(Action)
         title(achse,'Fletcher & Sherwin (1978)')
         
         
-        % STEFAN M. SCHMALHOLZ & YURI Y. PODLADCHIKOV METHOD
+        % SCHMALHOLZ & PODLADCHIKOV METHOD
         
         %  Generate plot
         
         % Load numerical data
         if isempty(Whoiscalling)
-            Fold(1).SP_plot.Vis = load(['int',filesep,'schmalholz_podladchikov.mat']);
+            Fold(1).SP_plot.Vis = load('schmalholz_podladchikov.mat');
         end
         
         % Set axes
