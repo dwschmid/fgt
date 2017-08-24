@@ -973,21 +973,21 @@ switch lower(Action)
         %  Hinge
         if Fold(1).hinge_method == 1
             plot(Fold(fold).Face(face).Arclength.Full(Fold(fold).Face(face).Hinge.Index), Fold(fold).Face(face).Curvature.Full(Fold(fold).Face(face).Hinge.Index),...
-                 'o','MarkerFaceColor',popts.hinge_color_active,'MarkerSize',popts.hinge_size_active, 'parent', achse);
+                 'ko','MarkerFaceColor',popts.hinge_color_active,'MarkerSize',popts.hinge_size_active, 'parent', achse);
             Legend_flag(3)  = [];
         end
         if Fold(1).hinge_method == 2
             plot(Fold(fold).Face(face).Hinge.Poly_Arc, Fold(fold).Face(face).Hinge.Poly_Cur,'Color', popts.curve_color_poly, 'LineWidth', popts.curve_thick_poly, 'parent', achse);
             Legend_flag(3)  = ~isempty(Fold(fold).Face(face).Hinge.Poly_Arc);
             plot(Fold(fold).Face(face).Arclength.Full(Fold(fold).Face(face).Hinge.Index), Fold(fold).Face(face).Curvature.Full(Fold(fold).Face(face).Hinge.Index),...
-                 'o','MarkerFaceColor',popts.hinge_color_active,'MarkerSize',popts.hinge_size_active, 'parent', achse);
+                 'ko','MarkerFaceColor',popts.hinge_color_active,'MarkerSize',popts.hinge_size_active, 'parent', achse);
         end
         
         Legend_flag(4)  = ~isempty(Fold(fold).Face(face).Hinge.Index);
         
         %  Inflection
         plot(Fold(fold).Face(face).Arclength.Full(Fold(fold).Face(face).Inflection), Fold(fold).Face(face).Curvature.Full(Fold(fold).Face(face).Inflection),...
-            'o','MarkerFaceColor',popts.inflection_color_active,'MarkerSize',popts.inflection_size_active, 'parent', achse);
+            'ko','MarkerFaceColor',popts.inflection_color_active,'MarkerSize',popts.inflection_size_active, 'parent', achse);
         Legend_flag(5)  = ~isempty(Fold(fold).Face(face).Inflection);
         
         
@@ -1048,21 +1048,21 @@ switch lower(Action)
                 if i ~= fold || j ~= face
                     %  Hinge
                     plot(Fold(i).Face(j).X.Full(Fold(i).Face(j).Hinge.Index), Fold(i).Face(j).Y.Full(Fold(i).Face(j).Hinge.Index),...
-                        'o','MarkerSize',popts.hinge_size_inactive,'MarkerFaceColor',popts.hinge_color_inactive, 'parent', achse);
+                        'ko','MarkerSize',popts.hinge_size_inactive,'MarkerFaceColor',popts.hinge_color_inactive, 'parent', achse);
                     
                     %  Inflection
                     plot(Fold(i).Face(j).X.Full(Fold(i).Face(j).Inflection), Fold(i).Face(j).Y.Full(Fold(i).Face(j).Inflection),...
-                        'o','MarkerSize',popts.inflection_size_inactive,'MarkerFaceColor',popts.inflection_color_inactive, 'parent', achse);
+                        'ko','MarkerSize',popts.inflection_size_inactive,'MarkerFaceColor',popts.inflection_color_inactive, 'parent', achse);
                 end
             end
         end
         
         %  Hinge
         plot(Fold(fold).Face(face).X.Full(Fold(fold).Face(face).Hinge.Index), Fold(fold).Face(face).Y.Full(Fold(fold).Face(face).Hinge.Index),...
-            'o','MarkerFaceColor',popts.hinge_color_active,'MarkerSize',popts.hinge_size_active, 'parent', achse);
+            'ko','MarkerFaceColor',popts.hinge_color_active,'MarkerSize',popts.hinge_size_active, 'parent', achse);
         %  Inflection
         plot(Fold(fold).Face(face).X.Full(Fold(fold).Face(face).Inflection), Fold(fold).Face(face).Y.Full(Fold(fold).Face(face).Inflection),...
-            'o','MarkerFaceColor',popts.inflection_color_active,'MarkerSize',popts.inflection_size_active, 'parent', achse);
+            'ko','MarkerFaceColor',popts.inflection_color_active,'MarkerSize',popts.inflection_size_active, 'parent', achse);
         
         axis(achse,'equal')
         box(achse, 'on');
@@ -1163,7 +1163,8 @@ switch lower(Action)
                     handle_legend(1) = plot(Fold(i).Face(j).WindowSizes, Fold(i).Face(j).NIP.Ori, 'o', 'MarkerSize', popts.NIPFW_size_marker_inactive,...
                         'MarkerEdgeColor', 'k', 'MarkerFaceColor', popts.NIPFW_color_marker_inactive, 'Parent', achse);
                     % - Plot anaysis of the smoothed curvature
-                    handle_legend(2) = plot(Fold(i).Face(j).WindowSizes, Fold(i).Face(j).NIP.Smoothed, 'Color', popts.NIPFW_color_line_inactive, 'Parent', achse);
+                    handle_legend(2) = plot(Fold(i).Face(j).WindowSizes, Fold(i).Face(j).NIP.Smoothed, 'o', 'MarkerSize', popts.NIPFW_thick_line_inactive,...
+                        'MarkerEdgeColor', popts.NIPFW_color_marker_inactive, 'Parent', achse);
                 end
             end
                         
@@ -1173,7 +1174,7 @@ switch lower(Action)
             ylabel(achse, '# Inflection Points','Color', 0.5*[1 1 1])
             box(achse, 'on');
             set(achse,'XColor', 0.5*[1 1 1],'YColor', 0.5*[1 1 1])
-            legend(handle_legend, {'A','B'}, 'Location', 'NorthEast');
+            legend(handle_legend, {'Without Smoothing','With Smoothing'}, 'Location', 'NorthEast');
             
             % Set legend handle
             setappdata(achse, 'handle_legend',  handle_legend);
@@ -1226,16 +1227,18 @@ switch lower(Action)
         set(fgt_gui_handle,'windowbuttonmotionfcn', []);
         
         %  Original
-        plot(Fold(fold).Face(face).Arclength.Ori, Fold(fold).Face(face).Curvature.Ori, 'Color',[0.7 0.7 0.7],'Hittest','off','parent', achse);
+        plot(Fold(fold).Face(face).Arclength.Ori, Fold(fold).Face(face).Curvature.Ori, 'Color',popts.curve_color_ori,'LineWidth', popts.curve_thick_ori,'Hittest','off','parent', achse);
         
         %  Smooth
-        plot(Fold(fold).Face(face).Arclength.Full, Fold(fold).Face(face).Curvature.Full, 'k','Hittest','off','parent', achse);
+        plot(Fold(fold).Face(face).Arclength.Full, Fold(fold).Face(face).Curvature.Full, 'Color',popts.curve_color_smoothed, 'LineWidth', popts.curve_thick_smoothed,'Hittest','off','parent', achse);
         
         %  Hinge
-        plot(Fold(fold).Face(face).Arclength.Full(Fold(fold).Face(face).Hinge.Index), Fold(fold).Face(face).Curvature.Full(Fold(fold).Face(face).Hinge.Index), 'ob','MarkerSize',4,'parent', achse);
+        plot(Fold(fold).Face(face).Arclength.Full(Fold(fold).Face(face).Hinge.Index), Fold(fold).Face(face).Curvature.Full(Fold(fold).Face(face).Hinge.Index), 'ko',...
+            'MarkerFaceColor',popts.hinge_color_active,'MarkerSize',popts.hinge_size_active,'parent', achse);
         
         %  Inflection
-        plot(Fold(fold).Face(face).Arclength.Full(Fold(fold).Face(face).Inflection), Fold(fold).Face(face).Curvature.Full(Fold(fold).Face(face).Inflection), 'or','MarkerSize',4,'parent', achse);
+        plot(Fold(fold).Face(face).Arclength.Full(Fold(fold).Face(face).Inflection), Fold(fold).Face(face).Curvature.Full(Fold(fold).Face(face).Inflection), 'ko',...
+            'MarkerFaceColor',popts.inflection_color_active,'MarkerSize',popts.hinge_size_active,'parent', achse);
 
         
         Legend_flag = logical([1 1 0 0]);
@@ -1279,15 +1282,20 @@ switch lower(Action)
         
         %  Fold
         for i=1:length(Fold)
-            fh  = fill([Fold(i).Face(1).X.Norm fliplr(Fold(i).Face(2).X.Norm)], [Fold(i).Face(1).Y.Norm fliplr(Fold(i).Face(2).Y.Norm)], 'k','parent', achse);
-            set(fh, 'EdgeColor', [0.9 0.9 0.9], 'FaceColor', [.97 .97 .97],'Hittest','off');
+            if i == fold
+                fh  = fill([Fold(i).Face(1).X.Norm fliplr(Fold(i).Face(2).X.Norm)], [Fold(i).Face(1).Y.Norm fliplr(Fold(i).Face(2).Y.Norm)], 'k', 'parent', achse);
+                set(fh, 'FaceColor', popts.fold_color_active);
+            else
+                fh  = fill([Fold(i).Face(1).X.Norm fliplr(Fold(i).Face(2).X.Norm)], [Fold(i).Face(1).Y.Norm fliplr(Fold(i).Face(2).Y.Norm)], 'k', 'parent', achse);
+                set(fh, 'FaceColor', popts.fold_color_inactive);
+            end
         end
         
         %  Face
         other_face          = [1 2];
         other_face(face)    = [];
-        fold_line = plot(Fold(fold).Face(face).X.Full,       Fold(fold).Face(face).Y.Full,       'Color','k','Hittest','off','parent', achse);
-                    plot(Fold(fold).Face(other_face).X.Full, Fold(fold).Face(other_face).Y.Full, 'Color',[0.7 0.7 0.7],'Hittest','off','parent', achse);
+        fold_line = plot(Fold(fold).Face(face).X.Full,       Fold(fold).Face(face).Y.Full,       'Color', popts.face_color_active,   'LineWidth', popts.face_thick_active,   'parent', achse);
+                    plot(Fold(fold).Face(other_face).X.Full, Fold(fold).Face(other_face).Y.Full, 'Color', popts.face_color_inactive, 'LineWidth', popts.face_thick_inactive, 'parent', achse);
                       
         setappdata(fgt_gui_handle, 'fold_line', fold_line);  
         
@@ -1295,22 +1303,26 @@ switch lower(Action)
             for j=1:2
                 if ~(i==fold && j==face)
                     %  Hinge
-                    plot(Fold(i).Face(j).X.Full(Fold(i).Face(j).Hinge.Index), Fold(i).Face(j).Y.Full(Fold(i).Face(j).Hinge.Index), 'o','MarkerSize',2,'Color',[0.2 0.2 0.2],'Hittest','off','parent', achse);
+                    plot(Fold(i).Face(j).X.Full(Fold(i).Face(j).Hinge.Index), Fold(i).Face(j).Y.Full(Fold(i).Face(j).Hinge.Index), ...
+                         'ko','MarkerSize',popts.hinge_size_inactive,'MarkerFaceColor',popts.hinge_color_inactive,'Hittest','off','parent', achse);
                     
                     %  Inflection
-                    plot(Fold(i).Face(j).X.Full(Fold(i).Face(j).Inflection), Fold(i).Face(j).Y.Full(Fold(i).Face(j).Inflection), 'o','MarkerSize',2,'Color',[0.5 0.5 0.5],'Hittest','off','parent', achse);
+                    plot(Fold(i).Face(j).X.Full(Fold(i).Face(j).Inflection), Fold(i).Face(j).Y.Full(Fold(i).Face(j).Inflection), ...
+                        'ko','MarkerSize',popts.inflection_size_inactive,'MarkerFaceColor',popts.inflection_color_inactive,'Hittest','off','parent', achse);
                 end
             end
         end
         
         %  Hinge
         for ih = 1:length(Fold(fold).Face(face).Hinge.Index)
-            hp(ih) = plot(Fold(fold).Face(face).X.Full(Fold(fold).Face(face).Hinge.Index(ih)), Fold(fold).Face(face).Y.Full(Fold(fold).Face(face).Hinge.Index(ih)), 'ob','MarkerSize',3,'parent', achse);
+            hp(ih) = plot(Fold(fold).Face(face).X.Full(Fold(fold).Face(face).Hinge.Index(ih)), Fold(fold).Face(face).Y.Full(Fold(fold).Face(face).Hinge.Index(ih)),...
+                'ko','MarkerFaceColor',popts.hinge_color_active,'MarkerSize',popts.hinge_size_active,'parent', achse);
             set(hp(ih),'ButtonDownFcn',@(a,b) mark_point(hp(ih)),'Hittest','on','Tag',num2str(Fold(fold).Face(face).Hinge.Index(ih)));
         end
         %  Inflection
         for in = 1:length(Fold(fold).Face(face).Inflection)
-            hi(in) = plot(Fold(fold).Face(face).X.Full(Fold(fold).Face(face).Inflection(in)), Fold(fold).Face(face).Y.Full(Fold(fold).Face(face).Inflection(in)), 'or','MarkerSize',3,'parent', achse);
+            hi(in) = plot(Fold(fold).Face(face).X.Full(Fold(fold).Face(face).Inflection(in)), Fold(fold).Face(face).Y.Full(Fold(fold).Face(face).Inflection(in)), ...
+                'ko','MarkerFaceColor',popts.inflection_color_active,'MarkerSize',popts.inflection_size_active,'parent', achse);
             set(hi(in),'ButtonDownFcn',@(a,b) mark_point(hi(in)),'Hittest','on','Tag',num2str(Fold(fold).Face(face).Inflection(in)));
         end
         
@@ -2758,7 +2770,9 @@ switch lower(Action)
             Fold(1).FS_plot.lohs = lohs;
             Fold(1).FS_plot.bees = bees;
             Fold(1).FS_plot.RRR  = RRR;
-            Fold(1).FS_plot.SSS  = SSS;
+            %Fold(1).FS_plot.SSS  = SSS;
+            % Convert stretch to shortening [in %]
+            Fold(1).FS_plot.SSS  = (1-SSS)*100;
         end
         
         % Plotting
@@ -2779,7 +2793,8 @@ switch lower(Action)
         clabel(C, h, 'Color', popts.FS_vis_color);
         
         % Define and plot the strain contours
-        escon = [0.1:0.1:0.9 0.95];
+        %escon = [0.1:0.1:0.9 0.95];
+        escon = [5 10:10:90];
         [C,h] = contour(Fold(1).FS_plot.lohs,Fold(1).FS_plot.bees,Fold(1).FS_plot.SSS,escon,...
             'Color',popts.FS_stretch_color,'LineWidth',popts.FS_stretch_thick,'parent',achse);
         clabel(C, h, 'Color', popts.FS_stretch_color);
@@ -2934,7 +2949,7 @@ switch lower(Action)
         % Together with the last two plot statements this can be used to
         % make the legend
         if exist('h1','var')
-            legend([ll, h1],'Stretch', 'Viscosity Ratio', 'Data');
+            legend([ll, h1],'Shortening [%]', 'Viscosity Ratio', 'Data');
         end
         
         % Legend
