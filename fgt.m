@@ -53,6 +53,12 @@ switch lower(Action)
             'WindowButtonDownFcn', @(a,b) fgt('step_1_load'), ...
             'Renderer', 'zbuffer'); %zbuffer so that contour plots work
         
+        % Figure Icon - Undocumented
+        warning('off','MATLAB:HandleGraphics:ObsoletedProperty:JavaFrame');
+        Icon_path	= which('fgt_icon.png');
+        set(get(fgt_gui_handle,'JavaFrame'),'FigureIcon', javax.swing.ImageIcon(Icon_path));
+        warning('on','MATLAB:HandleGraphics:ObsoletedProperty:JavaFrame');
+        
         %  File
         h1  = uimenu('Parent',fgt_gui_handle, 'Label','File');
         %  Load
