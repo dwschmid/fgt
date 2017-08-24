@@ -24,7 +24,7 @@ switch lower(Action)
             fgt_path    =  fileparts(mfilename('fullpath'));
             addpath(fullfile(fgt_path));
             addpath(fullfile(fgt_path, 'int'));
-            addpath(fullfile(fgt_path, 'hlp'));
+            addpath(fullfile(fgt_path, 'doc'));
             addpath(fullfile(fgt_path, 'ext', 'gaimc'));
             addpath(fullfile(fgt_path, 'ext', 'GUILayoutToolbox', 'layout'));
             addpath(fullfile(fgt_path, 'ext', 'mesh2D'));
