@@ -537,18 +537,10 @@ switch lower(Action)
         if isempty(getappdata(fgt_gui_handle, 'buttonUp'))
             
             % Load the button icon
-            icon        = fullfile(matlabroot,'/toolbox/matlab/icons/greenarrowicon.gif');
-            [cdata,map] = imread(icon);
-            
-            % Convert white pixels into a transparent background and black
-            map(map(:,1)+map(:,2)+map(:,3)==3) = NaN;
-            % Convert into 3D RGB-space
-            buttonDown          = ind2rgb(cdata',map);
-            buttonDown(:,:,1)   = buttonDown(:,:,2);
-            buttonDown(:,:,3)   = buttonDown(:,:,2);
-            buttonUp            = ind2rgb(flipud(cdata'),map);
-            buttonUp(:,:,1)     = buttonUp(:,:,2);
-            buttonUp(:,:,3)     = buttonUp(:,:,2);
+            buttons    = load('buttons.mat');
+            buttonUp   = double(buttons.buttonLeft);
+            buttonUp   = permute(buttonUp,[2,1,3]);
+            buttonDown = flipud(buttonUp);
             
             setappdata(fgt_gui_handle, 'buttonUp',   buttonUp);
             setappdata(fgt_gui_handle, 'buttonDown', buttonDown);
