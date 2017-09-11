@@ -1087,7 +1087,7 @@ switch lower(Action)
         popts = getappdata(popts_gui_handle, 'popts');
         
         % Save data
-        save(['ext',filesep,'popts.mat'],'popts')
+        save(['int',filesep,'popts.mat'],'popts')
         
     case 'restore'
         %% Restore
@@ -1095,7 +1095,7 @@ switch lower(Action)
         define_default_plotting_values;
         
         % Load file
-        load(['ext',filesep,'popts.mat'])
+        load(['int',filesep,'popts.mat'])
         
         % - Update data
         setappdata(popts_gui_handle, 'popts', popts);

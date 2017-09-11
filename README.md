@@ -17,10 +17,10 @@ fgt
 ### Externals
 FGT relies on the following external packages. They are included in the source, so no need to install separately.
 
- * [gaimc by David Gleich](https://www.mathworks.com/matlabcentral/fileexchange/24134-gaimc---graph-algorithms-in-matlab-code)
- * [GUI Layout Toolbox by David Sampson](https://www.mathworks.com/matlabcentral/fileexchange/47982-gui-layout-toolbox)
- * [mesh2d by Darren Engwirda](https://www.mathworks.com/matlabcentral/fileexchange/25555-mesh2d-delaunay-based-unstructured-mesh-generation)
- * [selfintersect by Antoni J. Canós](https://www.mathworks.com/matlabcentral/fileexchange/13351-fast-and-robust-self-intersections)
+ * [gaimc](https://www.mathworks.com/matlabcentral/fileexchange/24134-gaimc---graph-algorithms-in-matlab-code) by David Gleich
+ * [GUI Layout Toolbox](https://www.mathworks.com/matlabcentral/fileexchange/47982-gui-layout-toolbox) by David Sampson
+ * [mesh2d](https://www.mathworks.com/matlabcentral/fileexchange/25555-mesh2d-delaunay-based-unstructured-mesh-generation) by Darren Engwirda
+ * [selfintersect](https://www.mathworks.com/matlabcentral/fileexchange/13351-fast-and-robust-self-intersections) by Antoni J. Canós
 
  ### Authors
 
