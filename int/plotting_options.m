@@ -46,18 +46,12 @@ switch lower(Action)
         uimenu('Parent',h1, 'Label', 'Restore default options', ...
             'Callback', @(a,b) plotting_options('restore'), 'Separator','off', 'enable', 'on');
         
-        p                       = uiextras.TabPanel('Parent', popts_gui_handle);
-        
-        % General
-        popts_upanel_general    = uipanel('Parent', p);
-        popts_upanel_curvature  = uipanel('Parent', p);
-        popts_upanel_parameters = uipanel('Parent', p);
-        popts_upanel_diagrams   = uipanel('Parent', p);
-        
-        p.TabNames = {'General', 'Curvature', 'Parameters','Diagrams'};
-        p.TabSize  = 90;
-        p.SelectedChild = 1;
-        
+        % Tabs
+        tabgp = uitabgroup(popts_gui_handle, 'Position',[0 0 1 1]);
+        popts_upanel_general    = uitab(tabgp, 'Title', 'General');
+        popts_upanel_curvature  = uitab(tabgp, 'Title', 'Curvature');
+        popts_upanel_parameters	= uitab(tabgp, 'Title', 'Parameters');
+        popts_upanel_diagrams	= uitab(tabgp, 'Title', 'Diagrams');
         
         %% - General
         % Layer

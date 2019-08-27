@@ -27,7 +27,6 @@ switch lower(Action)
             addpath(fullfile(fgt_path, 'doc'));
             addpath(fullfile(fgt_path, 'ext', 'buttons'));
             addpath(fullfile(fgt_path, 'ext', 'gaimc'));
-            addpath(fullfile(fgt_path, 'ext', 'GUILayoutToolbox', 'layout'));
             addpath(fullfile(fgt_path, 'ext', 'mesh2D'));
             addpath(fullfile(fgt_path, 'ext', 'selfintersect'));
         end
@@ -321,7 +320,7 @@ switch lower(Action)
             axis(achse, 'equal');
             axis(achse, 'tight');
             zoom(fgt_gui_handle, 'off');
-            title(achse, {'Digitize even number of fold interfaces with at least 7 points each.', '(Enter = Done, Delete = Remove Point, +/- = Zoom In/Out, Spacebar+Mouse Move = Pan, Escape = Discard Digitization)'})
+            title(achse, {'Digitize even number of fold interfaces with at least 7 points each.', '(Enter = Done, Delete = Remove Point, +/- = Zoom In/Out, Spacebar+Mouse Move = Pan, Escape = Discard/Quit Digitization)'})
             
             % Already digitized layers
             for fold=1:length(Fold)
